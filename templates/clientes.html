@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Clientes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.ID_Cliente }}</td>
+                <td>{{ cliente.Nombre }}</td>
+                <td>{{ cliente.Ap_Paterno }}</td>
+                <td>{{ cliente.Ap_Materno }}</td>
+                <td>{{ cliente.Direccion }}</td>
+                <td>{{ cliente.Telefono }}</td>
+                <td>{{ cliente.Email }}</td>
+                <td>
+                    <a href="/editar_cliente/{{ cliente.ID_Cliente }}">Editar</a>
+                    <form action="/eliminar_cliente/{{ cliente.ID_Cliente }}" method="POST" style="display:inline;">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Agregar nuevo cliente</h2>
+    <form action="/add_client" method="POST">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required><br>
+        <label for="apellido_paterno">Apellido Paterno:</label>
+        <input type="text" id="apellido_paterno" name="apellido_paterno" required><br>
+        <label for="apellido_materno">Apellido Materno:</label>
+        <input type="text" id="apellido_materno" name="apellido_materno" required><br>
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" required><br>
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono" required><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+        <button type="submit">Agregar</button>
+    </form>
+
+    <br>
+    <a href="/">Volver al inicio</a>
+</body>
+</html>

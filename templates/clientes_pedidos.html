@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes y Pedidos</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .btn-edit, .btn-delete {
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-edit {
+            background-color: #4CAF50;
+        }
+        .btn-delete {
+            background-color: #f44336;
+        }
+        .btn-edit:hover, .btn-delete:hover {
+            opacity: 0.8;
+        }
+    </style>
+<script>
+function filterAndSortTable() {
+    // Get the selected filter criteria
+    const filterBy = document.querySelector('input[name="filter"]:checked').value;
+
+    // Get all the rows in the table body
+    const rows = Array.from(document.querySelectorAll("#clientesPedidosTable tbody tr"));
+
+    console.log("filtering");
+
+    // Filter the rows based on the filterBy value
+    const filteredRows = rows.filter(row => {
+        const estado = row.cells[3].innerText.trim();
+
+        if (filterBy === 'clear') {
+            return true; // Include all rows
+        } else if (filterBy === 'preparacion') {
+            return estado === 'Preparacion';
+        } else if (filterBy === 'en camino') {
+            return estado === 'En camino';
+        } else {
+            return false;
+        }
+    });
+
+    // Sort the filtered rows by Estado
+    filteredRows.sort((a, b) => {
+        const estadoA = a.cells[3].innerText.trim();
+        const estadoB = b.cells[3].innerText.trim();
+        return estadoA.localeCompare(estadoB);
+    });
+
+    // Clear the table body
+    const tbody = document.querySelector("#clientesPedidosTable tbody");
+    tbody.innerHTML = '';
+
+    // Append the sorted, filtered rows to the table
+    filteredRows.forEach(row => {
+        tbody.appendChild(row);
+    });
+}
+
+</script>
+
+</head>
+<body>
+    <h1>Clientes y Pedidos</h1>
+
+    <!-- Tabla para mostrar los clientes y sus pedidos -->
+    <table id="clientesPedidosTable">
+        <form>
+            <label><input type="radio" name="filter" value="clear" checked onclick="filterAndSortTable()"> Clear Filter</label>
+            <label><input type="radio" name="filter" value="preparacion" onclick="filterAndSortTable()"> en preparacion</label>
+            <label><input type="radio" name="filter" value="en camino" onclick="filterAndSortTable()"> en camino</label>
+        </form>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Fecha del Pedido</th>
+                <th>Estado del Pedido</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registro in clientes_pedidos %}
+            <tr>
+                <td>{{ registro.Nombre }}</td>
+                <td>{{ registro.Ap_Paterno }}</td>
+                <td>{{ registro.Fecha_Hora }}</td>
+                <td>{{ registro.Estado }}</td>
+                <td>
+                    <a href="/editar_pedido/{{ registro.ID_Pedido }}" class="btn-edit">Editar</a>
+                    <form action="/eliminar_pedido/{{ registro.ID_Pedido }}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-delete">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+
+    <h2>Hacer un Pedido</h2>
+    <form action="/hacer_pedido" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+
+        <label for="ap_paterno">Apellido Paterno:</label>
+        <input type="text" id="ap_paterno" name="ap_paterno" required><br><br>
+
+        <label for="fecha_hora">Fecha y Hora:</label>
+        <input type="datetime-local" id="fecha_hora" name="fecha_hora" required><br><br>
+
+        <label for="direccion_entrega">Direccion de Entrega:</label>
+        <input type="text" id="direccion_entrega" name="direccion_entrega" required><br><br>
+
+        <label for="estado">Estado del Pedido:</label>
+        <select id="estado" name="estado" required>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Preparacion">Preparacion</option>
+            <option value="En camino">En camino</option>
+            <option value="Entregado">Entregado</option>
+        </select><br><br>
+
+        <input type="submit" value="Realizar Pedido">
+    </form>
+
+    <br>
+    <a href="/">Volver al inicio</a>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ventas Diarias</title>
+</head>
+<body>
+    <h1>Ventas Diarias</h1>
+    {% if total_ventas %}
+        <p>Total ventas del día: {{ total_ventas.Total_Ventas }}</p>
+    {% else %}
+        <p>No se encontraron ventas para la fecha seleccionada.</p>
+    {% endif %}
+
+    <br>
+    <a href="/">Volver al inicio</a>
+</body>
+</html>
